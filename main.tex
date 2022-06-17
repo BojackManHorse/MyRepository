@@ -1,0 +1,168 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsthm, amsmath, mathtools, amssymb, faktor, geometry, units, mathrsfs, tikz-cd, Macros}
+
+\usetikzlibrary{arrows}
+
+\title{O-minimal structures}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Models}
+    \begin{definition}
+        A Model  $\mathcal{M}$ consists of a collection of objects $M$, some relations and functions on those objects, along with some constants.
+    \end{definition}
+    
+\begin{example}
+    $(\mathbb{N}, <, s, 0)$
+     \begin{itemize}
+         \item Our domain is just the natural numbers $\mathbb{N} = \{0, 1, 2, \ldots \}$
+         \item $<$ is a relation, where $1 < 2$, $2 < 3$ and so on
+         \item $s:\mathbb{N} \to \mathbb{N}$ is a function adding 1 to each number, so $s(0) = 1$, $s(1) = 2$
+         \item We have $0$ as a constant (Don't worry too much about this.)
+     \end{itemize}
+     Another example is $(\mathbb{Q}, <)$, where the domain is the rational numbers, and $<$ means what you expect.
+\end{example}
+\end{frame}
+
+\begin{frame}{Formulas}
+    Think of formulas as polynomials with variables $x,y,z \ldots$ and constants from our structure. But instead of $x^n$ and $x + y$ we are restricted to the operations from the model. So for example, in $\mathcal{N} = (\mathbb{N}, <, s, 0)$, formulas would look like this:
+    \begin{itemize}
+        \item $s(x) = 1$
+        \item $x > s(z)$
+        \item $s(s(x)) < 0$
+    \end{itemize}
+    We can also have logical operators, like $\land, \lor, \neg$, which correspond to and, or, not. So we could have:
+    \begin{itemize}
+        \item $\neg(s(x) = 1)$
+        \item $(s(5) = s(z)) \land (s(x) < 0)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{More Formulas}
+    We can also use $\forall x$ and $\exists x$, which correspond with 'for every $x$' and 'there exists some $x$'. This gives even more formulas:
+    
+    \begin{itemize}
+        \item $\forall x(s(x) = 0)$
+        \item $\exists x \forall y (s(x) = y)$
+    \end{itemize}
+    
+    Where it makes sense, a formula can be true or false in a structure. For example, the following are true in $\mathcal{N} = (\mathbb{N}, <, s, 0)$:
+    \begin{itemize}
+        \item $1 < 2$
+        \item $\forall x (x > 0 \lor x = 0)$
+        \item $\forall x (x = 0 \lor \exists y(s(y) = x))$
+    \end{itemize}
+    
+    The following are false:
+    \begin{itemize}
+        \item $2 < 1$
+        \item $(2 < 1) \land (1 < 2)$
+        \item $\forall x \exists y( s(y) = x)$
+    \end{itemize}
+    
+    If a formula $\phi$ is true in a model $\mathcal{M}$, then we write:
+    
+    $$ \mathcal{M} \models \phi$$
+\end{frame}
+
+\section{Definability}
+
+\begin{frame}
+    \begin{definition}
+        Let $\mathcal{M} = (M, \ldots)$ be a structure, $\phi(\overline{x}, \overline{a})$ be a formula with free variables $\overline{x}$ and constants $\overline{a} \in M^n$. The set defined by $\phi(\overline{x}, \overline{a})$ is:
+        
+        $$ \phi(\mathcal{M}^k, \overline{a}) \coloneqq \{x \in M \mid \mathcal{M} \models \phi(\overline{x}, \overline{a}) \}$$
+        
+        We say $X \subseteq M^k$ is \textbf{definable} is there's some formula $\phi(\overline{x}, \overline{a})$ such that $X = \phi(\mathcal{M}^k, \overline{a})$
+    \end{definition}
+    
+    \begin{example}
+         Let $\mathcal{N} = (\mathbb{N}, <, +)$, then:
+         
+         \begin{itemize}
+             \item $x = x$ defines the entirety of $\mathbb{N}$, including $0$!!!
+             \item $\phi(x) \coloneqq \exists y (y < x)$ defines everything but $0$.
+             \item $\psi(x) \coloneqq \exists y (y + y = x)$ defines all the even numbers.
+             \item $\chi(x) \coloneqq \forall y (y + y \not = x)$ defines all the odd numbers.
+             \item What does $\gamma (x) \coloneqq \exists y(y + y + y =x)$ define?
+         \end{itemize}
+    \end{example}
+\end{frame}
+    
+\begin{frame}{Definable sets in $(\mathbb{Q}, <)$}
+    Let $\mathcal{M} = (\mathbb{Q}, <)$, what do all the \textbf{quantifier free} definable sets look like? (So sets defined by formulas with no $\forall, \exists$).
+    
+    \begin{itemize}
+        \item We have all points $q \in \mathbb{Q}$, given by $x = q$
+        \item We have all intervals $(a,b)$, given by $a < x \land x < b$
+        \item We also have half lines $(a, +\infty), (-\infty, b)$, given by $x > a$ and $x < b$.
+    \end{itemize}
+    
+    Since the only operation on our structure was $<$, this exhausts all possible quantifier free definable sets! Specifically, any quantifier free definable set is going to be a finite union of the sets above. But we still haven't considered sets defined using quantifiers. Luckily, we don't have to:
+    
+    \begin{theorem}
+        Any formula with quantifiers is equivalent to one without any in the structure $(\mathbb{Q}, <)$.
+    \end{theorem}
+\end{frame}
+
+\section{O-minimality}
+
+\begin{frame}
+    \begin{definition}
+        Let $\mathcal{M} = (M, < ,\ldots)$ be a structure such that $(M, <)$ is a \textbf{dense linear order without endpoints}. We say $\mathcal{M}$ is o-minimal if for any formula $\phi(x, \overline{a})$, where $\overline{a}$ is a tuple of constants in $M$, the set:
+        
+        $$ \{x \in M \mid \mathcal{M} \models \phi(x, \overline{a}) \}$$ is a \textbf{finite} union of points and intervals.
+    \end{definition}
+
+   \begin{example}
+        \begin{itemize}
+            \item $(\mathbb{Q}, <)$, as shown earlier
+            \item $\mathbb{R} = (\mathbb{R}, +, - ,\cdot, 0, 1, <)$, since this structure also has quantifier elimination so we only need to consider the sets defined by $f(x) > 0$ and $f(x) = 0$, which can be shown to be finite collections of intervals.
+            \item $(\mathbb{Q}, +, - ,\cdot, 0, 1, <)$ is \textbf{not} o-minimal. since the set defined by $x^2 < 2$ is not an interval in in $\mathbb{Q}$.
+        \end{itemize}
+    \end{example}
+\end{frame}
+
+\begin{frame}{Definable sets in more than one dimension}
+    We know that o-minimality must place some restrictions on sets defined in $M^k$ for $k > 1$, since if $X \subseteq M^k$ is definable then so is $\pi(X) \subseteq M$, where $\pi: M^k \to M$ is a projection.
+    
+    For example, the set $ X = \{(0, z) \in \mathbb{R}^2 \mid z \in \mathbb{Z} \}$ can't be definable in $\mathcal{R}$, else $\pi(X) = \mathbb{Z}$ is definable too breaking o-minimality. Can we make this idea more precise?
+    
+    \begin{theorem}
+        Let $\mathcal{M} = (M, <, +, 0, \ldots)$ be o-minimal with a group structure. Then for any definable function $f: M \to M$, there is a partition of $M$ into finitely many intervals $\{P_1, \ldots, P_n\}$ such that $f:P_i \to M$ is monotone and continuous.
+    \end{theorem}
+\end{frame}
+
+\begin{frame}
+    \begin{example}
+         \begin{itemize}
+             \item $f(x) = sin(x)$ is not definable since it's always going from increasing to decreasing. An appropriate partition would need to contain the intervals $(-\pi, \pi), (\pi, 2\pi), (2\pi, 3\pi) \ldots$. 
+         \end{itemize}
+    \end{example}
+\end{frame}
+
+\begin{frame}{Cell decomposition}
+    \begin{itemize}
+        \item Any interval $(a,b)$ is a cell ($a, b$ could possibly be $\pm \infty$).
+        \item If $X \subseteq M^k$ is a cell, and $f,g:X \to M$ are definable function, then both:
+            \begin{itemize}
+                \item $\Gamma(f) \coloneqq \{(x, f(x)) \in M^{k+1} \mid x \in X \}$
+                \item $(f,g)_X \coloneqq \{(x, y) \in M^{k+1} \mid f(x) < y < g(x) \}$
+            \end{itemize}
+        are cells
+    \end{itemize}
+    
+    These are the building blocks for all definable sets in o-minimal structures:
+    
+    \begin{theorem}
+        Let $\mathcal{M} = (M, <, +, 0, \ldots)$ be o-minimal with a group structure, and $X \subseteq M^k$ be definable. Then there is a partition of $X$ into finitely many cells.
+    \end{theorem}
+\end{frame}
+
+\end{document}
